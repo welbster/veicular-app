@@ -15,9 +15,16 @@
   <a href="#-demonstração">Demonstração</a> •
   <a href="#-arquitetura-e-padroes">Arquitetura</a> •
   <a href="#-como-rodar-localmente">Rodar Local</a>
+<br>
+<p align="center">
+  <img src="docs/tela-gestor.png" alt="Tela do Gestor - Seleção de Áreas" width="48%">
+  &nbsp;
+  <img src="docs/tela-operador.png" alt="Tela do Operador - Visualização Mobile" width="48%">
 </p>
-
-![Screenshot do Sistema](https://dummyimage.com/1200x600/1e293b/ffffff.png&text=Insira+um+Print+bonito+do+seu+sistema+aqui)
+<p align="center">
+  <img src="docs/tela-login.png" alt="Tela de Login" width="48%">
+</p>
+<br>
 
 ## 🎯 Sobre o Projeto 
 
