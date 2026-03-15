@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- CONSTANTES ---
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB3aZOVBhGSebSvsrYDB7ShVAqMekg12a437riystZtTHmyUPMjbJd_GzLdw4cOs7k/exec";
-    const AGENTES_API_URL = "https://script.google.com/macros/s/AKfycbxg6XocN88LKvq1bv-ngEIWHjGG1XqF0ELSK9dFteunXo8a1R2AHeAH5xdfEulSZPzsgQ/exec";
-    const BAIRROS_API_URL = "https://script.google.com/macros/s/AKfycbw7VInWajEJflcf43PyWeiCh2IfRxVOlZjw3uiHgbKqO_12Y9ARUDnGxio6abnxxpdy/exec";
+    const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia
+    const AGENTES_API_URL = "https://api.meu-portfolio.com/backend/agentes"; // URL Fictícia
+    const BAIRROS_API_URL = "https://api.meu-portfolio.com/backend/bairros"; // URL Fictícia
     const TOTAL_AREAS = 109;
 
     // --- INICIALIZAÇÃO DO MAPA ---
@@ -50,32 +50,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalImoveisSpan = document.getElementById('total-imoveis');
     const formContainer = document.getElementById('form-container');
 
-    // --- FUNÇÃO CENTRAL DE API ---
+    // --- FUNÇÃO CENTRAL DE API (MOCK PARA PORTFÓLIO) ---
     async function fetchFromApi(action, params = {}, method = 'GET') {
-        const spinner = Swal.fire({ title: 'Processando...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
-        try {
-            let response;
-            if (method === 'GET') {
-                const url = new URL(SCRIPT_URL);
-                url.searchParams.append('action', action);
-                url.searchParams.append('token', token);
-                for (const key in params) { if(params[key]) url.searchParams.append(key, params[key]); }
-                response = await fetch(url);
-            } else { // POST
-                response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action, token, ...params })
-                });
-            }
-            spinner.close();
-            const result = await response.json();
-            if (!result.success) { throw new Error(result.message || 'Ocorreu um erro no servidor.'); }
-            return result;
-        } catch (error) {
-            spinner.close();
-            Swal.fire('Operação Falhou', error.message, 'error');
-            return { success: false, message: error.message };
+        const spinner = Swal.fire({ title: 'Processando Dados...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
+        await new Promise(r => setTimeout(r, 600)); // Simula tempo de rede
+        spinner.close();
+        
+        switch (action) {
+            case 'listUsers':
+                return { success: true, data: [
+                    { email: 'gestor@portfolio.com', perfil: 'Gestor', nome: 'Gestor Demo' },
+                    { email: 'operador@portfolio.com', perfil: 'Operador', nome: 'Operador Demo' }
+                ]};
+            case 'getActivitiesList':
+                return { success: true, data: [
+                    { id: 'ATV-001', ciclo: '1', data: '15/03/2026', veiculo: 'Viatura Alpha - 001', totalQuadras: 15, quadrasTrabalhadas: 5 },
+                    { id: 'ATV-002', ciclo: '1', data: '14/03/2026', veiculo: 'Viatura Beta - 002', totalQuadras: 10, quadrasTrabalhadas: 10 },
+                    { id: 'ATV-003', ciclo: '1', data: '15/03/2026', veiculo: 'Viatura Gama - 003', totalQuadras: 20, quadrasTrabalhadas: 0 }
+                ]};
+            case 'getActivityDetails':
+                return { success: true, data: {
+                    id: params.id_atividade, ciclo: params.ciclo, veiculo: 'Viatura Alpha - 001', produto: 'Inseticida A', bairros: 'Centro', motorista: 'João Silva', operador: 'Maria Souza',
+                    quadras: [{area: 1, id: 101}, {area: 1, id: 102}],
+                    statusMap: {'1-101': 'Trabalhada', '1-102': 'Pendente'}
+                }};
+            case 'getCompletedActivities':
+                return { success: true, data: [
+                    { id: 'ATV-002', ciclo: '1', data: '14/03/2026', viatura: 'Viatura Beta - 002', ocorrencias: 'Nenhuma' }
+                ]};
+            case 'manageUser':
+            case 'createActivity':
+            case 'deleteActivity':
+                return { success: true, message: 'Operação realizada com sucesso (Modo Portfólio).' };
+            default:
+                return { success: false, message: 'Ação mockada não encontrada.' };
         }
     }
 
@@ -250,17 +258,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DADOS INICIAIS E AUTOCOMPLETE ---
     async function popularDadosIniciais() {
         try {
-            const [agentesRes, bairrosRes, imoveisRes] = await Promise.all([ fetch(AGENTES_API_URL), fetch(BAIRROS_API_URL), fetch('data/imoveis_lookup.json') ]);
-            if (!agentesRes.ok || !bairrosRes.ok || !imoveisRes.ok) throw new Error("Falha ao buscar dados essenciais.");
+            // DADOS FICTÍCIOS PARA PORTFÓLIO
+            const agentesData = { agentes: ["João Silva", "Maria Souza", "Carlos Pedroso", "Ana Costa"] };
+            const bairrosData = { agentes: ["Centro", "Jardim Paulista", "Vila Nova", "Bela Vista", "Jardim das Rosas"] };
             
-            const agentesData = await agentesRes.json();
-            const bairrosData = await bairrosRes.json();
-            imoveisLookup = await imoveisRes.json();
+            try {
+                const imoveisRes = await fetch('data/imoveis_lookup.json');
+                if (imoveisRes.ok) imoveisLookup = await imoveisRes.json();
+            } catch(e) {
+                // Se não existir o JSON local, usamos mock genérico
+                imoveisLookup = { "1-103": { total_imoveis: 45, censitario: "123" }, "1-104": { total_imoveis: 30, censitario: "124" } };
+            }
             
             const popular = (data, id, listId, placeholder, onSelect) => {
                 const input = document.getElementById(id);
-                input.placeholder = placeholder;
-                setupAutocomplete(id, listId, data, onSelect);
+                if(input) {
+                    input.placeholder = placeholder;
+                    setupAutocomplete(id, listId, data, onSelect);
+                }
             };
 
             popular(agentesData.agentes, 'motorista-input', 'motorista-list', "Digite para buscar...", val => document.getElementById('motorista-input').value = val);
@@ -268,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
             popular(bairrosData.agentes, 'bairro-input', 'bairro-list', "Digite para adicionar...", bairro => {
                 selectedBairros.add(bairro); renderBairroTags(); document.getElementById('bairro-input').value = '';
             });
-        } catch(e) { Swal.fire('Erro Crítico', 'Não foi possível carregar os dados iniciais: ' + e.message, 'error'); }
+        } catch(e) { Swal.fire('Erro Crítico', 'Erro ao mockar dados iniciais', 'error'); }
     }
 
     function setupAutocomplete(inputId, listId, sourceArray, onSelectCallback) {

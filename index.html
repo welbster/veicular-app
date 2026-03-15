@@ -73,7 +73,7 @@
             const loginForm = document.getElementById('login-form');
             const loginBtn = document.getElementById('login-btn');
             const installBtn = document.getElementById('pwa-install-btn');
-            const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB3aZOVBhGSebSvsrYDB7ShVAqMekg12a437riystZtTHmyUPMjbJd_GzLdw4cOs7k/exec";
+            const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia para Portfólio
 
             // --- LÓGICA DO PWA ---
             let deferredPrompt; // Variável para guardar o evento de instalação
@@ -118,26 +118,30 @@
                 const password = document.getElementById('password').value;
 
                 try {
-                    const response = await fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'login', email, password })
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        sessionStorage.setItem('authToken', result.token);
-                        sessionStorage.setItem('userName', result.nome);
-                        sessionStorage.setItem('userProfile', result.perfil);
-                        sessionStorage.setItem('userEmail', result.email);
-                        if (result.perfil === 'Gestor') {
-                            window.location.href = 'gestor.html';
-                        } else if (result.perfil === 'Operador') {
-                            window.location.href = 'operador.html';
-                        } else {
-                            throw new Error('Perfil de usuário desconhecido.');
-                        }
+                    // MOCK DE LOGIN PARA PORTFÓLIO
+                    await new Promise(resolve => setTimeout(resolve, 800)); // Delay falso
+                    
+                    let perfil = 'Gestor';
+                    let nome = 'Gestor Demo';
+                    
+                    // Se a palavra 'operador' estiver no email, logam como operador
+                    if (email.toLowerCase().includes('operador')) {
+                        perfil = 'Operador';
+                        nome = 'Operador Demo';
+                    } else if (email.toLowerCase().includes('gestor')) {
+                        perfil = 'Gestor';
+                        nome = 'Gestor Demo';
+                    }
+                    
+                    sessionStorage.setItem('authToken', 'token_demo_portfolio');
+                    sessionStorage.setItem('userName', nome);
+                    sessionStorage.setItem('userProfile', perfil);
+                    sessionStorage.setItem('userEmail', email);
+
+                    if (perfil === 'Gestor') {
+                        window.location.href = 'gestor.html';
                     } else {
-                        throw new Error(result.message || 'Credenciais inválidas.');
+                        window.location.href = 'operador.html';
                     }
                 } catch (error) {
                     Swal.fire({ icon: 'error', title: 'Falha no Login', text: error.message });

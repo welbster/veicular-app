@@ -55,9 +55,9 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     const requestUrl = new URL(event.request.url);
 
-    // 1. Ignora completamente as requisições para a API do Google Script.
+    // 1. Ignora completamente as requisições para a API Fictícia (ou Google Script Original).
     // Elas NUNCA devem ser cacheadas.
-    if (requestUrl.hostname.includes('script.google.com')) {
+    if (requestUrl.hostname.includes('api.meu-portfolio.com')) {
         return; 
     }
 

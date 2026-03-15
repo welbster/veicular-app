@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     // --- CONSTANTES E VARIÁVEIS GLOBAIS ---
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxB3aZOVBhGSebSvsrYDB7ShVAqMekg12a437riystZtTHmyUPMjbJd_GzLdw4cOs7k/exec";
+    const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia para portfólio
     let db;
     let quadrasLayer, activityStatus = {}, currentActivityData = {}, userMarker = null, watchId = null;
     let isSyncing = false;
@@ -61,32 +61,28 @@ document.addEventListener('DOMContentLoaded', async () => {
         Swal.fire({ icon: 'error', title: 'Erro Crítico de Inicialização', text: error.message, allowOutsideClick: false });
     }
 
-    // --- FUNÇÕES DE API ---
+    // --- FUNÇÕES DE API (MOCK PARA PORTFÓLIO) ---
     async function fetchFromApi(action, params = {}, method = 'GET') {
-        const spinner = Swal.fire({ title: 'Processando...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
-        try {
-            let response;
-            if (method === 'GET') {
-                const url = new URL(SCRIPT_URL);
-                url.searchParams.append('action', action);
-                url.searchParams.append('token', token);
-                for (const key in params) { if(params[key]) url.searchParams.append(key, params[key]); }
-                response = await fetch(url);
-            } else { // POST
-                response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action, token, ...params })
-                });
-            }
-            spinner.close();
-            const result = await response.json();
-            if (!result.success) { throw new Error(result.message || 'Ocorreu um erro no servidor.'); }
-            return result;
-        } catch (error) {
-            spinner.close();
-            Swal.fire('Operação Falhou', error.message, 'error');
-            return { success: false, message: error.message };
+        const spinner = Swal.fire({ title: 'Carregando...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
+        await new Promise(r => setTimeout(r, 600)); // Simula tempo de rede
+        spinner.close();
+        
+        switch (action) {
+            case 'getPendingActivities':
+                return { success: true, data: [
+                    { id: 'ATV-003', ciclo: '1', veiculo: 'Viatura Gama - 003', produto: 'Inseticida B', motorista: 'Pedro', operador: 'Você' }
+                ]};
+            case 'getActivity':
+                return { success: true, data: {
+                    quadras: {'1-103': 'Pendente', '1-104': 'Pendente', '2-205': 'Trabalhada'},
+                    areas: [1, 2]
+                }};
+            case 'batchUpdateStatus':
+            case 'submitBulletin':
+            case 'manageUser':
+                return { success: true, message: 'Operação realizada com sucesso (Modo Portfólio).' };
+            default:
+                return { success: false, message: 'Ação mockada não encontrada.' };
         }
     }
 
