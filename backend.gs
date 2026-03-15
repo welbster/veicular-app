@@ -1,11 +1,4 @@
-/**
- * ====================================================================
- * CONFIGURAÇÃO GLOBAL (MODO PORTFÓLIO)
- * ====================================================================
- * NOTA: Esta é a versão refatorada e limpa do código original, preparada
- * para exibição em portfólio. Senhas, IDs e chaves reais foram removidos
- * e substituídos por dados fictícios/placeholders.
- */
+// Configurações do ambiente para demonstração de portfólio
 const CONFIG = {
   SPREADSHEET_ID: "SEU_ID_DE_PLANILHA_AQUI", 
   SECRET_KEY: "CHAVE_SECRETA_SUPER_SEGURA_AQUI", // Ex: "MudeParaSuaFraseSuperSecreta&ComCaracteres#Especiais123!"
@@ -16,11 +9,7 @@ const CONFIG = {
   }
 };
 
-/**
- * ====================================================================
- * FUNÇÕES DE SEGURANÇA E AUTENTICAÇÃO
- * ====================================================================
- */
+// Utils de Hash e Verificação
 
 /**
  * Calcula o hash SHA-256 de uma senha usando a chave secreta global.
@@ -61,11 +50,7 @@ function verifyToken(token) {
   }
 }
 
-/**
- * ====================================================================
- * ROTEADORES PRINCIPAIS (doGet e doPost) API ESTILO REST
- * ====================================================================
- */
+// Rotas de Entrada
 
 function doPost(e) {
   let responseData;
@@ -122,11 +107,7 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
-/**
- * ====================================================================
- * CONTROLADORES DE NEGÓCIO - ATIVIDADES, STATUS E BOLETINS
- * ====================================================================
- */
+// Regras de Negócio e Serviços Básicos
 
 function batchUpdateStatus(params) {
     const sheet = SpreadsheetApp.openById(CONFIG.SPREADSHEET_ID).getSheetByName(CONFIG.SHEETS.ATIVIDADES);
@@ -393,11 +374,7 @@ function getCompletedTaskKeys() {
   return completedTasks;
 }
 
-/**
- * ====================================================================
- * GERENCIAMENTO E AUTENTICAÇÃO DE USUÁRIOS
- * ====================================================================
- */
+// Gerenciamento de Autenticação e Usuários
 
 function login(params) {
   const { email, password } = params;
@@ -498,11 +475,7 @@ function manageUser(params) {
     }
 }
 
-/**
- * ====================================================================
- * UTILITÁRIO - HASH INICIAL
- * ====================================================================
- */
+// Ferramenta de desenvolvimento para gerar hash inicial
 
 /**
  * Utilitário de backend: Usado por administradores para criar o primeiro

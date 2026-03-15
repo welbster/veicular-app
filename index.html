@@ -25,7 +25,6 @@
 
     <div class="login-page">
         
-        <!-- PAINEL DA ESQUERDA: BOAS-VINDAS E MARCA -->
         <div class="welcome-panel">
             <!-- Ícone de Localização (SVG) -->
             <svg class="logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white">
@@ -35,7 +34,6 @@
             <p>Gerenciamento e controle de rotas e atividades em tempo real.</p>
         </div>
 
-        <!-- PAINEL DA DIREITA: FORMULÁRIO DE LOGIN -->
         <div class="form-panel">
             <div class="login-form-container">
                 <h3>Acesse sua Conta</h3>
@@ -49,7 +47,7 @@
                         <input type="password" id="password" required autocomplete="current-password">
                     </div>
                     <button type="submit" id="login-btn">Entrar</button>
-                     <!-- BOTÃO DE INSTALAÇÃO DO PWA (COMEÇA ESCONDIDO) -->
+                     <!-- PWA Install -->
                     <button type="button" id="pwa-install-btn" style="display: none;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
@@ -64,7 +62,6 @@
 
     </div>
 
-    <!-- SCRIPTS NO FINAL -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
        <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -75,8 +72,7 @@
             const installBtn = document.getElementById('pwa-install-btn');
             const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia para Portfólio
 
-            // --- LÓGICA DO PWA ---
-            let deferredPrompt; // Variável para guardar o evento de instalação
+            let deferredPrompt;
 
             window.addEventListener('beforeinstallprompt', (e) => {
                 // Previne que o mini-infobar apareça no Chrome
@@ -108,7 +104,6 @@
                 deferredPrompt = null;
             });
 
-            // --- LÓGICA DE LOGIN ---
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 loginBtn.disabled = true;

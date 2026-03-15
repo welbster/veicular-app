@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- VERIFICAÇÃO DE AUTENTICAÇÃO ---
     const token = sessionStorage.getItem('authToken');
     const userName = sessionStorage.getItem('userName');
     const userProfile = sessionStorage.getItem('userProfile');
@@ -11,24 +10,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // --- CONSTANTES ---
     const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia
     const AGENTES_API_URL = "https://api.meu-portfolio.com/backend/agentes"; // URL Fictícia
     const BAIRROS_API_URL = "https://api.meu-portfolio.com/backend/bairros"; // URL Fictícia
     const TOTAL_AREAS = 109;
 
-    // --- INICIALIZAÇÃO DO MAPA ---
     const map = L.map('map').setView([-23.1791, -45.8872], 13);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
 
-    // --- VARIÁVEIS GLOBAIS ---
     let quadrasLayer;
     let imoveisLookup = {};
     const selectedQuadras = new Map();
     const selectedBairros = new Set();
     let geojsonFeatures = new Map();
 
-    // --- ELEMENTOS DA DOM ---
     const welcomeMessage = document.getElementById('welcome-message');
     const logoutBtn = document.getElementById('logout-btn');
     const manageActivitiesBtn = document.getElementById('manage-activities-btn');
@@ -50,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalImoveisSpan = document.getElementById('total-imoveis');
     const formContainer = document.getElementById('form-container');
 
-    // --- FUNÇÃO CENTRAL DE API (MOCK PARA PORTFÓLIO) ---
     async function fetchFromApi(action, params = {}, method = 'GET') {
         const spinner = Swal.fire({ title: 'Processando Dados...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
         await new Promise(r => setTimeout(r, 600)); // Simula tempo de rede
@@ -87,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- LÓGICA DE GERENCIAMENTO DO FORMULÁRIO (CORRIGIDA) ---
     function setFormEnabled(enabled) {
         const formElements = formContainer.querySelectorAll('input, select, button');
         formElements.forEach(el => el.disabled = !enabled);
@@ -115,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- GESTÃO DE USUÁRIOS ---
     function renderUsersTable(users) {
         usersTableBody.innerHTML = '';
         if (!users || users.length === 0) {
@@ -141,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) { renderUsersTable(result.data); }
     }
 
-    // --- GESTÃO DE ATIVIDADES ---
     function renderActivitiesTable(activities) {
         activitiesTableBody.innerHTML = '';
         if (!activities || activities.length === 0) {
@@ -169,7 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (result.success) { renderActivitiesTable(result.data); }
     }
     
-    // --- LÓGICA DO MAPA E SELEÇÃO ---
     function getColorForArea(areaId) { if (!areaId) return '#777'; const hue = (areaId * 137.508) % 360; return `hsl(${hue}, 80%, 50%)`; }
     function getQuadraId(feature) { return feature?.properties?.title ? parseInt(feature.properties.title.replace(/\D/g, '')) : null; }
     function getAreaId(feature) { return feature?.properties?.description ? parseInt(feature.properties.description.replace(/\D/g, '')) : null; }
@@ -255,7 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSidebar();
     }
     
-    // --- DADOS INICIAIS E AUTOCOMPLETE ---
     async function popularDadosIniciais() {
         try {
             // DADOS FICTÍCIOS PARA PORTFÓLIO
@@ -314,7 +303,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- LÓGICA DO HISTÓRICO DE ATIVIDADES ---
     async function searchHistory() {
         historyTableBody.innerHTML = '<tr><td colspan="5">Buscando...</td></tr>';
         const params = {
@@ -340,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- EVENT LISTENERS ---
     welcomeMessage.textContent = `Bem-vindo(a), ${userName || 'Usuário'}`;
     logoutBtn.addEventListener('click', () => { sessionStorage.clear(); window.location.href = 'index.html'; });
     manageActivitiesBtn.addEventListener('click', openManageModal);
@@ -621,7 +608,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- INICIALIZAÇÃO ---
     for (let i = 1; i <= TOTAL_AREAS; i++) {
         areaSelector.appendChild(new Option(`Área ${i}`, i));
     }

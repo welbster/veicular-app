@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // --- VERIFICAÇÃO DE AUTENTICAÇÃO ---
     const token = sessionStorage.getItem('authToken');
     const userProfile = sessionStorage.getItem('userProfile');
 
@@ -9,7 +8,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
     
-    // --- CONSTANTES E VARIÁVEIS GLOBAIS ---
     const SCRIPT_URL = "https://api.meu-portfolio.com/backend/exec"; // URL Fictícia para portfólio
     let db;
     let quadrasLayer, activityStatus = {}, currentActivityData = {}, userMarker = null, watchId = null;
@@ -17,7 +15,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     let currentActivityId = null;
     let currentActivityCycle = null;
     
-    // --- ELEMENTOS DOM ---
     const map = L.map('map', { zoomControl: false }).setView([-23.1791, -45.8872], 13);
     const logoutBtn = document.getElementById('logout-btn-op');
     const changePasswordBtn = document.getElementById('change-password-btn');
@@ -40,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         'bulletin-interrupcao', 'bulletin-odo-inicio', 'bulletin-odo-termino', 'bulletin-obs'
     ];
 
-    // --- INICIALIZAÇÃO DA APLICAÇÃO ---
     L.control.zoom({ position: 'topright' }).addTo(map);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -61,7 +57,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         Swal.fire({ icon: 'error', title: 'Erro Crítico de Inicialização', text: error.message, allowOutsideClick: false });
     }
 
-    // --- FUNÇÕES DE API (MOCK PARA PORTFÓLIO) ---
     async function fetchFromApi(action, params = {}, method = 'GET') {
         const spinner = Swal.fire({ title: 'Carregando...', didOpen: () => Swal.showLoading(), allowOutsideClick: false, allowEscapeKey: false });
         await new Promise(r => setTimeout(r, 600)); // Simula tempo de rede
@@ -86,7 +81,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- BANCO DE DADOS LOCAL (INDEXEDDB) ---
     function initDB() {
         return new Promise((resolve, reject) => {
             const request = indexedDB.open('atividadesDB', 2);
@@ -100,8 +94,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // --- LÓGICA DE SINCRONIZAÇÃO E STATUS OFFLINE ---
-    // ** CORREÇÃO: FUNÇÃO RESTAURADA **
     async function updateSyncBadge() {
         if (!db) return;
         const transaction = db.transaction('sync_queue', 'readonly');
@@ -187,7 +179,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-    // --- GESTÃO DE ATIVIDADES E MAPA ---
     async function popularAtividadesPendentes() {
         atividadeSelect.innerHTML = '<option value="">Carregando...</option>';
         const result = await fetchFromApi('getPendingActivities');
@@ -304,7 +295,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         progressContainer.style.display = 'flex';
     }
 
-    // --- LÓGICA DO BOLETIM ---
     function openBulletinModal() {
         bulletinForm.reset();
         document.getElementById('bulletin-data').value = new Date().toLocaleDateString('pt-BR');
@@ -390,7 +380,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         Object.values(fields).forEach(el => el?.addEventListener('input', update));
     }
 
-    // --- LÓGICA DE GEOLOCALIZAÇÃO ---
     function startTracking() {
         if (!navigator.geolocation) {
             return Swal.fire('Indisponível', 'A geolocalização não é suportada por este navegador.', 'error');
@@ -426,7 +415,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         trackBtn.classList.remove('tracking');
     }
 
-    // --- EVENT LISTENERS E CONFIGURAÇÃO FINAL ---
     function setupEventListeners() {
         logoutBtn.addEventListener('click', () => { sessionStorage.clear(); window.location.href = 'index.html'; });
         changePasswordBtn.addEventListener('click', () => changePasswordModal.style.display = 'flex');
