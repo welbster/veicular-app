@@ -16,14 +16,18 @@
   <a href="#-arquitetura-e-padroes">Arquitetura</a> •
   <a href="#-como-rodar-localmente">Rodar Local</a>
 <br>
+
+### 📸 Telas do Sistema
+
+| Visão do Gestor (Desktop) | Visão do Operador (Mobile) |
+| :-----------------------: | :------------------------: |
+| <img src="docs/tela-gestor.png" width="550"> | <img src="docs/tela-operador.png" width="280"> |
+
 <p align="center">
-  <img src="docs/tela-gestor.png" alt="Tela do Gestor - Seleção de Áreas" width="48%">
-  &nbsp;
-  <img src="docs/tela-operador.png" alt="Tela do Operador - Visualização Mobile" width="48%">
+  <b>Tela Autenticação PWA</b><br>
+  <img src="docs/tela-login.png" width="830">
 </p>
-<p align="center">
-  <img src="docs/tela-login.png" alt="Tela de Login" width="48%">
-</p>
+
 <br>
 
 ## 🎯 Sobre o Projeto 
@@ -96,5 +100,5 @@ python -m http.server 3000
 
 ---
 <p align="center">
-  Desenvolvido com carinho e bastante café por <strong>Welbster</strong> ☕
+  Desenvolvido com carinho e bastante café por <strong>Wélbster</strong> ☕
 </p>
